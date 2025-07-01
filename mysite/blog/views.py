@@ -14,12 +14,15 @@ def post_list(request):
     )
 
 
-def post_detail(request, id):
+def post_detail(request, year, month, day, post):
     favourite_post = None
     post = get_object_or_404(
         Post,
-        id=id,
-        status=Post.Status.PUBLISHED
+        status=Post.Status.PUBLISHED,
+        slug=post,
+        publish__year=year,
+        publish__month=month,
+        publish__day=day
     )
     try:
         if request.user.is_authenticated:
