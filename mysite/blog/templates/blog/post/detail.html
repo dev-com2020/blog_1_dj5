@@ -9,7 +9,7 @@
   </p>
   <p>
   {% if is_favourite %}
-    ❤️
+    ❤️ 
   {% else %}
       <a href="{% url 'blog:add_favourite' post.id %}">Add to favourites</a>
   {% endif %}
