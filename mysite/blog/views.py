@@ -4,6 +4,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.template.context_processors import request
+from django.views.decorators.http import require_POST
 from django.views.generic import ListView
 
 from .forms import EmailPostForm
@@ -124,7 +125,9 @@ def post_share(request,post_id):
 
 
 
-
+@require_POST
+def post_comment(request,post_id):
+    pass
 
 
 
