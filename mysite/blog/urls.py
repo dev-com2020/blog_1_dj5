@@ -12,4 +12,5 @@ urlpatterns = [
          views.post_detail, name='post_detail'),
     path('favrourite/add/<int:id>/', views.add_favourite, name='add_favourite'),
     path('favourites/', views.favourites, name='favourites'),
+    path('<int:post_id>/share/', views.post_share, name='post_share'),
 ]
