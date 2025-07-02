@@ -3,7 +3,6 @@ from django.core.mail import send_mail
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.template.context_processors import request
 from django.views.decorators.http import require_POST
 from django.views.generic import ListView
 

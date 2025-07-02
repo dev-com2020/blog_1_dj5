@@ -22,7 +22,17 @@
     </p>
     {% with comments.count as total_comments %}
         <h2>
-            {{ total_comments }} komentarz{{ total_comments|pluralize:"y,e"}}
+            {{ total_comments }} komentarz{{ total_comments|pluralize:"y,e" }}
         </h2>
     {% endwith %}
+    {% for comment in comments %}
+        <div class="info">
+            Komentarz {{ forloop.counter }} przez {{ comment.name }}
+            {{ comment.created }}
+        </div>
+        {{ comment.body|linebreaks }}
+    {% empty %}
+        <p>Brak komentarza</p>
+    {% endfor %}
+    {% include "blog/post/includes/comment_form.html" %}
 {% endblock %}
