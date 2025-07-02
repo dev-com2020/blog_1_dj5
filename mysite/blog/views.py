@@ -80,7 +80,7 @@ def favourites(request):
         {'favourite_posts': favourite_posts}
     )
 
-def post_share(reqeust,post_id):
+def post_share(request,post_id):
     post = get_object_or_404(
         Post,
         id=post_id,
