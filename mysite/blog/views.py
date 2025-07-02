@@ -96,7 +96,7 @@ def post_share(request,post_id):
                 post.get_absolute_url()
             )
             subject = (
-                f"{'name'} - {'email'}"
+                f"{cd['name']} - {cd['email']}"
                 f"rekomenduje Tobie post {post.title}"
             )
             message = (
@@ -106,7 +106,7 @@ def post_share(request,post_id):
                 subject=subject,
                 message=message,
                 from_email=None,
-                recipient_list=['to']
+                recipient_list=[cd['to']]
             )
             sent = True
 
