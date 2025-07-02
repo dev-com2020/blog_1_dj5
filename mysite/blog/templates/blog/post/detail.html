@@ -3,21 +3,26 @@
 {% block title %}{{ post.title }}{% endblock %}
 
 {% block content %}
-  <h1>{{ post.title }}</h1>
-  <p class="date">
-    Published {{ post.publish }} by {{ post.author }}
-  </p>
-  <p>
-  {% if is_favourite %}
-    ❤️ 
-  {% else %}
-      <a href="{% url 'blog:add_favourite' post.id %}">Add to favourites</a>
-  {% endif %}
-  </p>
-  {{ post.body|linebreaks }}
-    <p>
-    <a href="{% url "blog:post_share" post.id %}">
-        Podziel się postem
-    </a>
+    <h1>{{ post.title }}</h1>
+    <p class="date">
+        Published {{ post.publish }} by {{ post.author }}
     </p>
+    <p>
+        {% if is_favourite %}
+            ❤️
+        {% else %}
+            <a href="{% url 'blog:add_favourite' post.id %}">Add to favourites</a>
+        {% endif %}
+    </p>
+    {{ post.body|linebreaks }}
+    <p>
+        <a href="{% url "blog:post_share" post.id %}">
+            Podziel się postem
+        </a>
+    </p>
+    {% with comments.count as total_comments %}
+        <h2>
+            {{ total_comments }} komentarz{{ total_comments|pluralize:"y,e"}}
+        </h2>
+    {% endwith %}
 {% endblock %}
