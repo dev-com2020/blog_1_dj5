@@ -2,7 +2,7 @@ from django.contrib import admin
 from django import forms
 from django.contrib.auth.models import User
 
-from .models import Post, FavouritePost
+from .models import Post, FavouritePost, Comment
 
 
 # napisać klasę, która zmieni formularz w User - czyli pole wyszukiwania ustawi na email
@@ -68,3 +68,9 @@ class PostAdmin(admin.ModelAdmin):
 #     search_fields = ['user__username','post__title']
 #     date_hierarchy = 'created'
 #     ordering = ['-created']
+
+@admin.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ['name','email','post','created','active']
+    list_filter = ['active','created','updated']
+    search_fields = ['name','email','body']
