@@ -2,8 +2,10 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.template.context_processors import request
 from django.views.generic import ListView
 
+from .forms import EmailPostForm
 from .models import FavouritePost, Post
 
 class PostListView(ListView):
@@ -77,3 +79,45 @@ def favourites(request):
         'blog/post/favourites.html',
         {'favourite_posts': favourite_posts}
     )
+
+def post_share(reqeust,post_id):
+    post = get_object_or_404(
+        Post,
+        id=post_id,
+        status=Post.Status.PUBLISHED
+    )
+    if request.method == 'POST':
+        form = EmailPostForm(request.POST)
+        if form.is_valid():
+            cd = form.cleaned_data
+
+    else:
+        form = EmailPostForm()
+    return render(
+        request,
+        'blog/post/share.html',
+        {
+            'post': post,
+            'form': form,
+        }
+    )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

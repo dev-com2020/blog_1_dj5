@@ -2,7 +2,8 @@ from django.contrib import admin
 from django import forms
 from django.contrib.auth.models import User
 
-from .models import Post
+from .models import Post, FavouritePost
+
 
 # napisać klasę, która zmieni formularz w User - czyli pole wyszukiwania ustawi na email
 
@@ -59,3 +60,11 @@ class PostAdmin(admin.ModelAdmin):
     # Łatwą nawigację po datach (date_hierarchy).
     # Domyślne sortowanie (ordering).
     # Lepsze filtrowanie dzięki fasetkom (show_facets).
+
+# @admin.register(FavouritePost)
+# class FavouritePostAdmin(admin.ModelAdmin):
+#     list_display = ['user','post','created']
+#     list_filter = ['created','user']
+#     search_fields = ['user__username','post__title']
+#     date_hierarchy = 'created'
+#     ordering = ['-created']
