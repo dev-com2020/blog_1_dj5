@@ -14,6 +14,7 @@ def initialize_database():
     conn.close()
 
 def generate_questions(text):
+    initialize_database()
     conn = sqlite3.connect('question.db')
     cursor = conn.cursor()
     prompt = f"""Stwórz test składający się z 10 pytań, z wieloma odpowiedziami na temat: {text}.
@@ -29,12 +30,28 @@ def generate_questions(text):
 
     questions = response.choices[0].message.content
 
-    base_key = ' '.join(text.split()[:2])
+    import unicodedata
+
+    base_key = 'historia'
     key = base_key
-    index=1
-    while key_exists(cursor, key):
+    index = 1
+
+    def normalize_key(s):
+        return ''.join(
+            c for c in unicodedata.normalize('NFKD', s)
+            if not unicodedata.combining(c)
+        ).lower()
+
+    while key_exists(cursor, normalize_key(key)):
         key = f"{base_key} {index}"
         index += 1
+
+    value = questions
+    cursor.execute(f"INSERT INTO questions VALUES ({key}, {value})")
+    conn.commit()
+
+    return questions
+
 
 def key_exists(cursor,key):
     cursor.execute("SELECT COUNT(*) FROM questions WHERE key = ?", (key,))
