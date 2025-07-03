@@ -1,7 +1,7 @@
 import sqlite3
 from openai import OpenAI
 
-client = OpenAI(api_key="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")
+client = OpenAI(api_key="")
 
 def initialize_database():
     conn = sqlite3.connect('question.db')
