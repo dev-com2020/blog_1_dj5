@@ -1,2 +1,3 @@
 .env
 mysite/blog/migrations
+quiz_project/db.sqlite3
