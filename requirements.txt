@@ -8,3 +8,4 @@ django-colorfield
 djangorestframework
 drf-spectacular
 djangorestframework-simplejwt
+openai
