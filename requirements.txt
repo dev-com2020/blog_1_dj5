@@ -7,3 +7,4 @@ django-admin-interface
 django-colorfield
 djangorestframework
 drf-spectacular
+djangorestframework-simplejwt

@@ -1,7 +1,9 @@
 from django.urls import path
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from . import views
 from . import api_views
+from .api_views import FavouritePostToggleAPIView
 
 app_name = 'blog'
 
@@ -21,4 +23,7 @@ urlpatterns = [
     path('api/posts/', api_views.PostListAPIView.as_view(), name='post_list_api'),
     path('api/posts/<int:pk>/', api_views.PostDetailAPIView.as_view(), name='post_detail_api'),
     path('api/posts/<int:post_id>/comments/', api_views.CommentListCreateAPIView.as_view(), name='comment_list_create_api'),
+    path('api/posts/<int:post_id>/fav/',FavouritePostToggleAPIView.as_view(),name='fav-post-toggle'),
+    path('api/token/',TokenObtainPairView.as_view(), name="token-obtain-pair"),
+    path('api/token/refresh/',TokenRefreshView.as_view(), name="token-refresh"),
 ]

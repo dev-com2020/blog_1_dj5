@@ -100,6 +100,18 @@ def api_root(request):
         }
     })
 
+
+@extend_schema_view(
+    get=extend_schema(
+        summary="Dodaj lub usuń z ulubionych",
+        description="Dodaje lub usuwa post z listy ulubionych bieżącego użytkownika",
+        tags=['posts'],
+        responses={ 200:{"type":"object","properties": {"favorited": {"type": "boolean"}}},
+                    404:{"description": "Post nie istnieje"},
+                    401:{"description": "Niezalogowany użytkownik"}
+                   }
+    )
+)
 class FavouritePostToggleAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
