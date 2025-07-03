@@ -8,4 +8,5 @@ def home(request):
         text = request.POST['text']
         questions = generate_questions(text)
         context = {'questions': questions}
-    return render(request,'base.html',context)
+        return render(request,'base.html',context)
+    return render(request,'base.html')
