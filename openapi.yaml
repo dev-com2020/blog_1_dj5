@@ -1,0 +1,357 @@
+        - slug
+
+    PostDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+          example: 1
+        title:
+          type: string
+          maxLength: 250
+          example: "Mój pierwszy post"
+        slug:
+          type: string
+          maxLength: 250
+          example: "moj-pierwszy-post"
+        author:
+          type: string
+          readOnly: true
+          example: "admin"
+        body:
+          type: string
+          example: "Pełna treść postu blogowego..."
+        publish:
+          type: string
+          format: date-time
+          example: "2024-01-15T10:30:00Z"
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+          example: "2024-01-15T10:00:00Z"
+        updated:
+          type: string
+          format: date-time
+          readOnly: true
+          example: "2024-01-15T10:15:00Z"
+        status:
+          type: string
+          enum: [DF, PB]
+          example: "PB"
+        comments:
+          type: array
+          readOnly: true
+          items:
+            $ref: '#/components/schemas/Comment'
+        comments_count:
+          type: integer
+          readOnly: true
+          example: 5
+      required:
+        - title
+        - slug
+        - body
+
+    Comment:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+          example: 1
+        name:
+          type: string
+          maxLength: 80
+          example: "Jan Kowalski"
+        email:
+          type: string
+          format: email
+          example: "jan@example.com"
+        body:
+          type: string
+          example: "To jest treść komentarza..."
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+          example: "2024-01-15T11:00:00Z"
+        active:
+          type: boolean
+          readOnly: true
+          example: true
+      required:
+        - name
+        - email
+        - body
+
+    CommentCreate:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 80
+          example: "Jan Kowalski"
+        email:
+          type: string
+          format: email
+          example: "jan@example.com"
+        body:
+          type: string
+          example: "To jest treść komentarza..."
+      required:
+        - name
+        - email
+        - body
+
+  securitySchemes:
+    sessionAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid
+      description: Session-based authentication używane przez Django
+
+security:
+  - sessionAuth: []
+
+tags:
+  - name: posts
+    description: Operacje na postach blogowych
+  - name: comments
+    description: Operacje na komentarzach do postów
+  - name: auth
+    description: Uwierzytelnianie i autoryzacja
+openapi: 3.0.3
+info:
+  title: Blog API
+  description: |
+    Kompletna dokumentacja API dla aplikacji Blog.
+    
+    ## Funkcjonalności
+    - Lista i szczegóły postów blogowych
+    - Zarządzanie komentarzami
+    - Paginacja wyników
+    - Uwierzytelnianie użytkowników
+    
+    ## Uwierzytelnianie
+    API używa session-based authentication z Django REST Framework.
+    
+    ## Formaty odpowiedzi
+    Wszystkie endpointy zwracają dane w formacie JSON.
+    
+    ## Paginacja
+    Lista postów jest paginowana z domyślnym rozmiarem strony 10 elementów.
+
+  version: 1.0.0
+  contact:
+    name: Blog API Support
+    email: support@blog.example.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://127.0.0.1:8000
+    description: Serwer deweloperski
+  - url: https://api.blog.example.com
+    description: Serwer produkcyjny
+
+paths:
+  /blog/api/:
+    get:
+      summary: API Root
+      description: Główny endpoint API z listą dostępnych endpointów
+      tags:
+        - auth
+      responses:
+        '200':
+          description: Lista dostępnych endpointów
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  posts:
+                    type: string
+                    format: uri
+                    example: "http://127.0.0.1:8000/blog/api/posts/"
+                  authentication:
+                    type: string
+                    format: uri
+                    example: "http://127.0.0.1:8000/api-auth/"
+                  documentation:
+                    type: object
+                    properties:
+                      swagger:
+                        type: string
+                        format: uri
+                      redoc:
+                        type: string
+                        format: uri
+                      schema:
+                        type: string
+                        format: uri
+
+  /blog/api/posts/:
+    get:
+      summary: Lista wszystkich postów
+      description: Pobiera listę wszystkich opublikowanych postów z paginacją
+      tags:
+        - posts
+      parameters:
+        - name: page
+          in: query
+          description: Numer strony
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: page_size
+          in: query
+          description: Liczba elementów na stronie
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 10
+      responses:
+        '200':
+          description: Lista postów
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                    example: 25
+                  next:
+                    type: string
+                    format: uri
+                    nullable: true
+                  previous:
+                    type: string
+                    format: uri
+                    nullable: true
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PostList'
+
+  /blog/api/posts/{id}/:
+    get:
+      summary: Szczegóły postu
+      description: Pobiera szczegółowe informacje o konkretnym poście wraz z komentarzami
+      tags:
+        - posts
+      parameters:
+        - name: id
+          in: path
+          description: ID postu
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Szczegóły postu
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostDetail'
+        '404':
+          description: Post nie został znaleziony
+
+  /blog/api/posts/{post_id}/comments/:
+    get:
+      summary: Lista komentarzy do postu
+      description: Pobiera wszystkie aktywne komentarze dla konkretnego postu
+      tags:
+        - comments
+      parameters:
+        - name: post_id
+          in: path
+          description: ID postu
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Lista komentarzy
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
+
+    post:
+      summary: Dodaj komentarz do postu
+      description: Tworzy nowy komentarz dla konkretnego postu
+      tags:
+        - comments
+      parameters:
+        - name: post_id
+          in: path
+          description: ID postu
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommentCreate'
+      responses:
+        '201':
+          description: Komentarz został utworzony
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+        '400':
+          description: Błędne dane wejściowe
+
+components:
+  schemas:
+    PostList:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+          example: 1
+        title:
+          type: string
+          maxLength: 250
+          example: "Mój pierwszy post"
+        slug:
+          type: string
+          maxLength: 250
+          example: "moj-pierwszy-post"
+        author:
+          type: string
+          readOnly: true
+          example: "admin"
+        publish:
+          type: string
+          format: date-time
+          example: "2024-01-15T10:30:00Z"
+        status:
+          type: string
+          enum: [DF, PB]
+          example: "PB"
+        comments_count:
+          type: integer
+          readOnly: true
+          example: 5
+        excerpt:
+          type: string
+          readOnly: true
+          example: "To jest skrócony fragment treści postu..."
+      required:
+        - title
+

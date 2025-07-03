@@ -5,3 +5,5 @@ python-decouple==3.8
 django-debug-toolbar~=5.2.0
 django-admin-interface
 django-colorfield
+djangorestframework
+drf-spectacular
