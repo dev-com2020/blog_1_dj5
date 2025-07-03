@@ -1,9 +1,13 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Quiz App</title>
+    <link href="{% static 'dashboard.css' %}" rel="stylesheet" />
+  <link rel="stylesheet" type="text/css" href="{% static 'quiz_style.css' %}">
+    <link href="{% static 'bootstrap.min.css' %}" rel="stylesheet" />
 </head>
 <body>
   <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
