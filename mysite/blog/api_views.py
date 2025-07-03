@@ -1,5 +1,6 @@
 from rest_framework import generics, permissions, status
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiParameter, OpenApiExample
 from drf_spectacular.types import OpenApiTypes
@@ -128,3 +129,16 @@ class FavouritePostToggleAPIView(APIView):
             fav_obj.delete()
             return Response({"favorited": False}, status=status.HTTP_200_OK)
         return Response({"favorited": True}, status=status.HTTP_200_OK)
+
+from rest_framework_simplejwt.tokens import RefreshToken
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def logout_view(request):
+    try:
+        refresh_token = request.data["refresh"]
+        token = RefreshToken(refresh_token)
+        token.blacklist()
+        return Response(status=205)
+    except Exception as e:
+        return Response(status=400)
