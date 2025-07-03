@@ -3,6 +3,8 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiParameter, OpenApiExample
 from drf_spectacular.types import OpenApiTypes
+from rest_framework.views import APIView
+
 from .models import Post, Comment, FavouritePost
 from .serializers import PostSerializer, PostListSerializer, CommentSerializer, FavouritePostSerializer
 
@@ -97,3 +99,20 @@ def api_root(request):
             'schema': request.build_absolute_uri('/api/schema/')
         }
     })
+
+class FavouritePostToggleAPIView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self,request,post_id):
+        try:
+            post = Post.published.get(id=post_id)
+        except Post.DoesNotExist:
+            return Response({
+                "detail": "Post nie istnieje"
+            }, status=status.HTTP_404_NOT_FOUND)
+        fav_obj,created = FavouritePost.objects.get_or_create(user=request.user,post=post)
+
+        if not created:
+            fav_obj.delete()
+            return Response({"favorited": False}, status=status.HTTP_200_OK)
+        return Response({"favorited": True}, status=status.HTTP_200_OK)
