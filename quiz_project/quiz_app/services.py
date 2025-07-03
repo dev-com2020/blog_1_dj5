@@ -32,23 +32,27 @@ def generate_questions(text):
 
     import unicodedata
 
-    base_key = 'historia'
-    key = base_key
-    index = 1
-
     def normalize_key(s):
         return ''.join(
             c for c in unicodedata.normalize('NFKD', s)
             if not unicodedata.combining(c)
         ).lower()
 
+    base_key = normalize_key(text)
+    key = base_key
+    index = 1
+
     while key_exists(cursor, normalize_key(key)):
         key = f"{base_key} {index}"
         index += 1
 
     value = questions
-    cursor.execute(f"INSERT INTO questions VALUES ({key}, {value})")
+    cursor.execute(
+        "INSERT INTO questions (key, value) VALUES (?, ?)",
+        (key, value)
+    )
     conn.commit()
+    conn.close()
 
     return questions
 
