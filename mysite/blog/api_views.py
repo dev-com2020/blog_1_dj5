@@ -5,14 +5,14 @@ from rest_framework.response import Response
 from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiParameter, OpenApiExample
 from drf_spectacular.types import OpenApiTypes
 from rest_framework.views import APIView
-
+from django.utils.translation import gettext_lazy as _
 from .models import Post, Comment, FavouritePost
 from .serializers import PostSerializer, PostListSerializer, CommentSerializer, FavouritePostSerializer
 
 
 @extend_schema_view(
     get=extend_schema(
-        summary="Lista wszystkich postów",
+        summary=_("Lista wszystkich postów"),
         description="Pobiera listę wszystkich opublikowanych postów z paginacją",
         tags=['posts'],
         responses={200: PostListSerializer(many=True)}
@@ -121,7 +121,7 @@ class FavouritePostToggleAPIView(APIView):
             post = Post.published.get(id=post_id)
         except Post.DoesNotExist:
             return Response({
-                "detail": "Post nie istnieje"
+                "detail": _("Post nie istnieje")
             }, status=status.HTTP_404_NOT_FOUND)
         fav_obj,created = FavouritePost.objects.get_or_create(user=request.user,post=post)
 
