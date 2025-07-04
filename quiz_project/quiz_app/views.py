@@ -28,16 +28,17 @@ class TestListView(TemplateView):
         context['data'] = data
         return context
 
-    def download(self,request,test_id):
-        test = next((t for t in data if t[0] == test_id), None)
-        if test:
-            header = test[1]
-            questions = test[2]
-            filename = f'test_{test_id}.txt'
-            with open(filename,'w') as f:
-                file_path = os.path.join(os.getcwd(),filename)
-                response = HttpResponse(open(file_path,'rb'),content_type='text/plain')
-                response['Content-Disposition'] = f"attachment; filename='{header}.txt'"
-                return response
-        else:
-            return HttpResponse(status=404)
+def download(request,test_id):
+    test = next((t for t in data if t[0] == test_id), None)
+    if test:
+        header = test[1]
+        questions = test[2]
+        filename = f'test_{test_id}.txt'
+        with open(filename,'w') as f:
+            f.write(questions)
+        file_path = os.path.join(os.getcwd(),filename)
+        response = HttpResponse(open(file_path,'rb'),content_type='text/plain')
+        response['Content-Disposition'] = f"attachment; filename='{header}.txt'"
+        return response
+    else:
+        return HttpResponse(status=404)

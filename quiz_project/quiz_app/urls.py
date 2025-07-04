@@ -1,6 +1,7 @@
 from django.urls import path
 
 from . import views
+from .views import TestListView,download
 
 urlpatterns = [
     path('', views.home, name='home'),
