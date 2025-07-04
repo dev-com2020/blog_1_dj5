@@ -1,7 +1,9 @@
 import sqlite3
 from openai import OpenAI
 
-client = OpenAI(api_key="")
+from . import config
+
+client = OpenAI(api_key=config.API_KEY)
 
 def initialize_database():
     conn = sqlite3.connect('question.db')
@@ -19,7 +21,8 @@ def generate_questions(text):
     cursor = conn.cursor()
     prompt = f"""Stwórz test składający się z 10 pytań, z wieloma odpowiedziami na temat: {text}.
         Każde pytanie będzie w osobnej linii, oraz ustaw możliwe 4 odpowiedzi.
-        Może być jedna lub dwie poprawne odpowiedzi."""
+        Może być jedna lub dwie poprawne odpowiedzi.
+        Podaj listę poprwanych odpowiedzi na końcu."""
     response = client.chat.completions.create(
         model="gpt-4.1-nano",
         messages=[{'role': 'user', 'content': f"{prompt}"}],
